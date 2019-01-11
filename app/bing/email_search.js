@@ -48,7 +48,7 @@ function emailsSearch(id) {
         q.drain = function () {
             console.log('The queue has finished processing!');
             lowdb.updateQuerieEmails(id, result);
-            lowdb.updateQuerieEmailStatistic(id, emailStatistic);
+            // lowdb.updateQuerieEmailStatistic(id, emailStatistic);
         };
 
         function startQueue(){

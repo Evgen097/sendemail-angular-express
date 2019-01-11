@@ -3,13 +3,18 @@ var router = express.Router();
 var path = require('path');
 var appRoot = require('app-root-path');
 
+var moment = require('moment-timezone');
+moment().format();
+
+const config =  require(path.resolve( appRoot.path, 'bing', 'config.js'));
+const lib =  require(path.resolve( appRoot.path, 'bing', 'lib.js'));
+
 const lowdb = require(path.resolve( appRoot.path, 'bing', 'db', 'lowdb.js'));
 var bingsearch = require(path.resolve( appRoot.path, 'bing', 'bingsearch.js'));
 
-var add_suffixes = require(path.resolve( appRoot.path, 'bing', 'needle_add_suffixes'));
 var emailsSearch = require(path.resolve( appRoot.path, 'bing', 'email_search'));
-
-// console.log( bingsearch  )
+var add_suffixes = require(path.resolve( appRoot.path, 'bing', 'needle_add_suffixes'));
+var send_emails = require(path.resolve( appRoot.path, 'bing', 'sendemail', 'index.js'));
 
 
 
@@ -167,7 +172,7 @@ router.put('/query/findemails', function (req, res) {
 });
 
 router.put('/query/:id/startemailing', function (req, res) {
-    var message;
+    var message = {message: 'Идет отправка писем... !'};;
     var id;
     var data;
 
@@ -193,10 +198,17 @@ router.put('/query/:id/startemailing', function (req, res) {
             res.status(200);
             return res.json({message: 'Имейлы уже отправлены!'});
         }
-        message = {message: 'Идет отправка писем... !'};
+        // console.log('Идет отправка писем... ! ID: ', id);
+
+
+        let checkLimit =  lib.checkLettersLimit();
+
+        message = {message: checkLimit.message};
+        if(!checkLimit.error) send_emails(id);
 
     }catch (e) {
         message = {error: 'Ошибка при обращении к базе данных!'};
+        console.error(e);
     }
 
     res.status(200);

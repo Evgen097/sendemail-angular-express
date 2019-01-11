@@ -5,10 +5,13 @@ const FileSync = require('lowdb/adapters/FileSync');
 const adapter = new FileSync('./db.json');
 const db = low(adapter);
 
+var moment = require('moment-timezone');
+moment().format();
+
 // console.log(global.__basedir);
 
 var setDbDefaults = ()=>{
-    db.defaults({queries: [], allsentemails: [] })
+    db.defaults({queries: [], allsentemails: [], date: moment(), sentletters: 0})
         .write()
 
     // db.set('user', data.user)

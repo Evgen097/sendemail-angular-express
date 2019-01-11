@@ -6,6 +6,7 @@ class Query{
         this.date = '';
         this.message = '';
         this.sentmessages = 0;
+        this.successemails = [];
         this.datesendingemails = '';
         this.webpages = [];
         this.emails = [];
